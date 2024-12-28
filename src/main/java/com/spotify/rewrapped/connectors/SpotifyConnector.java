@@ -5,34 +5,37 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
+import java.util.Base64;
 import java.util.Map;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.spotify.rewrapped.utils.JsonParserUtil;
+
+import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Repository
 public class SpotifyConnector {
     private static SpotifyConnector instance;
     private String clientId;
     private String clientSecret;
     private String baseUrl;
     private WebClient client;
+    private String redirectUri;
 
-    private SpotifyConnector(){
+    private SpotifyConnector() {
         clientId = "6a6355fbeb044695930d74e002d91214";
         baseUrl = "https://api.spotify.com/v1/";
         clientSecret = "2722c709f97248889ba35a4f33069ced";
         client = WebClient.builder()
-        .baseUrl(baseUrl)
-        .build();
+                .baseUrl(baseUrl)
+                .build();
+        redirectUri = "http://localhost:3000/auth/callback";
     }
-    
-    private String getNewToken(){
+
+    private String getNewToken() {
         String url = "https://accounts.spotify.com/api/token";
-        String formData = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s", clientId, clientSecret);
-        HttpClient client =  HttpClient.newHttpClient();
+        String formData = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s", clientId,
+                clientSecret);
+        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -40,51 +43,61 @@ public class SpotifyConnector {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            Map<String, String> parsedResponse = JsonParserUtil.parseJSON(response.body());
-            return parsedResponse.get("access_token");
+            Map<String, Object> parsedResponse = JsonParserUtil.parseJSON(response.body());
+            return (String) parsedResponse.get("access_token");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
         }
-        
+
     }
 
-    public static SpotifyConnector getInstance(){
-        if(instance == null){
+    public Map<String, Object> getUserToken(String code, String state) {
+        String url = "https://accounts.spotify.com/api/token";
+        String formData = String.format("code=%s&redirect_uri=%s&grant_type=authorization_code", code,
+                redirectUri);
+        String credentials = clientId + ":" + clientSecret;
+        String authorizationHeader = Base64.getEncoder().encodeToString(credentials.getBytes());
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Authorization", String.format("Basic %s", authorizationHeader))
+                .POST(HttpRequest.BodyPublishers.ofString(formData))
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            Map<String, Object> parsedResponse = JsonParserUtil.parseJSON(response.body());
+            return parsedResponse;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static SpotifyConnector getInstance() {
+        if (instance == null) {
             instance = new SpotifyConnector();
         }
         return instance;
     }
 
-    public void initializeConnection(){
+    public void initializeConnection() {
         String accessToken = getNewToken();
-        client = client.mutate().defaultHeader("Authorization", "Bearer "+accessToken).build();
+        client = client.mutate().defaultHeader("Authorization", "Bearer " + accessToken).build();
     }
 
-    public Map<String, String> getArtistData(String id){
-        try{
-            Map<String, String> response = client.get().uri("artists/"+id).retrieve().bodyToMono(Map.class).block();
-            return response;
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-            return null;
-        }
-
+    public String getClientId() {
+        return clientId;
     }
 
-    public Map<String, String> getTopArtists(String timeRange){
-        try{
-            Map<String, String> requestBody = new HashMap<>();
-            requestBody.put("time_range", timeRange);
-            Map<String, String> response = client.get().uri("me/top/artists").retrieve().bodyToMono(Map.class).block();
-            return response;
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-            return null;
-        }
+    public WebClient getClient() {
+        return this.client;
     }
 
-
-
+    public String getRedirectURI() {
+        return this.redirectUri;
+    }
 
 }
