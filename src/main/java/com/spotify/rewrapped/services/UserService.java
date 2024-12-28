@@ -20,19 +20,12 @@ public class UserService {
 
     @SuppressWarnings("unchecked")
     public Map<String, Object> getTopArtists(String accessToken, String timeRange) {
-        try {
-            Map<String, String> requestBody = new HashMap<>();
-            requestBody.put("time_range", timeRange);
-            Map<String, Object> response = client.get().uri("me/top/artists")
-                    .header("Authorization", "Bearer " + accessToken)
-                    .retrieve().bodyToMono(Map.class).block();
-            return response;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Map error = (Map) new HashMap<>();
-            error.put("error", e.getMessage());
-            return error;
-        }
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("time_range", timeRange);
+        Map<String, Object> response = client.get().uri("me/top/artists")
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve().bodyToMono(Map.class).block();
+        return response;
     }
 
 }
