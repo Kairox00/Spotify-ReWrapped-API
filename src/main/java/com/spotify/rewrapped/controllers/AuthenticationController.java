@@ -24,7 +24,6 @@ public class AuthenticationController {
     @PostMapping("/login")
     public String login(@RequestBody Map<String, Object> data) {
         String clientId = connector.getClientId();
-
         String scope = "user-read-private user-top-read user-read-email";
         String email = (String) data.get("email");
         User user = userService.getUserByEmail(email);

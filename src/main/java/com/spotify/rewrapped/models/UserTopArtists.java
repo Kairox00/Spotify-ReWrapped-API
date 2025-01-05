@@ -24,6 +24,9 @@ public class UserTopArtists {
   @Id
   private String year;
 
+  @Id
+  private int rank;
+
   private String artistName;
-  private String[] artistGenres;
+
 }

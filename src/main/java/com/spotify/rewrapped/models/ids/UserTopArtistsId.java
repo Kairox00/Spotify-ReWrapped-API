@@ -16,4 +16,5 @@ public class UserTopArtistsId {
   private String artistId;
   private String month;
   private String year;
+  private int rank;
 }
