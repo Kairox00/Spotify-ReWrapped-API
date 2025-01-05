@@ -9,10 +9,10 @@ import java.util.Base64;
 import java.util.Map;
 import com.spotify.rewrapped.utils.JsonParserUtil;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Repository
+@Component
 public class SpotifyConnector {
     private static SpotifyConnector instance;
     private String clientId;
@@ -31,7 +31,7 @@ public class SpotifyConnector {
         redirectUri = "http://localhost:3000/auth/callback";
     }
 
-    private String getNewToken() {
+    private String getApplicationToken() {
         String url = "https://accounts.spotify.com/api/token";
         String formData = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s", clientId,
                 clientSecret);
@@ -52,7 +52,7 @@ public class SpotifyConnector {
 
     }
 
-    public Map<String, Object> getUserToken(String code, String state) {
+    public Map<String, Object> getUserRefreshToken(String code, String state) {
         String url = "https://accounts.spotify.com/api/token";
         String formData = String.format("code=%s&redirect_uri=%s&grant_type=authorization_code", code,
                 redirectUri);
@@ -84,8 +84,9 @@ public class SpotifyConnector {
     }
 
     public void initializeConnection() {
-        String accessToken = getNewToken();
+        String accessToken = getApplicationToken();
         client = client.mutate().defaultHeader("Authorization", "Bearer " + accessToken).build();
+        System.out.println("Connected to Spotify");
     }
 
     public String getClientId() {

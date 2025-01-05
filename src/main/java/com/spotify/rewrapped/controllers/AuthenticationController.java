@@ -28,7 +28,7 @@ public class AuthenticationController {
 
     @GetMapping("/callback")
     public Map<String, Object> callback(@RequestParam String code, @RequestParam String state) {
-        Map<String, Object> result = connector.getUserToken(code, state);
+        Map<String, Object> result = connector.getUserRefreshToken(code, state);
         return result;
     }
 }
