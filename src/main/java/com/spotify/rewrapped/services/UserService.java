@@ -8,14 +8,43 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.spotify.rewrapped.connectors.SpotifyConnector;
+import com.spotify.rewrapped.models.User;
+import com.spotify.rewrapped.repositories.UserRepository;
+import com.spotify.rewrapped.utils.HashGenerator;
 
 @Service
 public class UserService {
     private WebClient client;
+    private UserRepository userRepository;
 
     @Autowired
-    public UserService(SpotifyConnector connector) {
+    public UserService(SpotifyConnector connector, UserRepository userRepository) {
         this.client = connector.getClient();
+        this.userRepository = userRepository;
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User getUserById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public User getUserByHashCode(String hashCode) {
+        return userRepository.findByHashCode(hashCode);
+    }
+
+    public User createUser(String email) {
+        User user = new User();
+        user.setEmail(email);
+        user.setHashCode(HashGenerator.generateHash(email));
+        userRepository.save(user);
+        return user;
+    }
+
+    public User updateUser(User user) {
+        return userRepository.save(user);
     }
 
     @SuppressWarnings("unchecked")

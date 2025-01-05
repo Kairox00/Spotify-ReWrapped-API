@@ -20,10 +20,11 @@ public class User {
   @Column(unique = true, nullable = false)
   private String email;
 
-  @Column(nullable = false)
   private String name;
 
+  private String refreshToken;
+
   @Column(nullable = false)
-  private String refresh_token;
+  private String hashCode;
 
 }
