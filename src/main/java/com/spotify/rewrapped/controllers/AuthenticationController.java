@@ -1,7 +1,9 @@
 package com.spotify.rewrapped.controllers;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ public class AuthenticationController {
     private UserService userService;
 
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, Object> data) {
+    public Map<String, Object> login(@RequestBody Map<String, Object> data) {
         String clientId = connector.getClientId();
         String scope = "user-read-private user-top-read user-read-email";
         String email = (String) data.get("email");
@@ -35,11 +37,13 @@ public class AuthenticationController {
         String oAuthUrl = String.format(
                 "https://accounts.spotify.com/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s&state=%s",
                 clientId, scope, redirectUri, state);
-        return oAuthUrl;
+        Map<String, Object> result = new HashMap<>();
+        result.put("oauthUrl", oAuthUrl);
+        return result;
     }
 
     @GetMapping("/callback")
-    public Map<String, Object> callback(@RequestParam String code,
+    public ResponseEntity<?> callback(@RequestParam String code,
             @RequestParam String state) {
         User user = userService.getUserByHashCode(state);
         if (user == null || !user.getHashCode().equals(state)) {
@@ -48,6 +52,17 @@ public class AuthenticationController {
         Map<String, Object> result = connector.getUserRefreshToken(code, state);
         user.setRefreshToken((String) result.get("refresh_token"));
         userService.updateUser(user);
-        return result;
+        if (result.containsKey("error")) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(result);
     }
+
+    // @GetMapping("/token")
+    // public Map<String, Object> getAccessToken(@RequestParam int userId) {
+    // String refreshToken = (String) data.get("refresh_token");
+    // user.setRefreshToken((String) result.get("refresh_token"));
+    // userService.updateUser(user);
+    // return new RedirectView("http://localhost:5173/login");
+    // }
 }

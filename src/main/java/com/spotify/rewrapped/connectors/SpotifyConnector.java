@@ -28,7 +28,7 @@ public class SpotifyConnector {
         client = WebClient.builder()
                 .baseUrl(baseUrl)
                 .build();
-        redirectUri = "http://localhost:3000/auth/callback";
+        redirectUri = "http://localhost:5173/callback";
     }
 
     private String getApplicationToken() {
