@@ -49,9 +49,18 @@ public class UserService {
 
     @SuppressWarnings("unchecked")
     public Map<String, Object> getTopArtists(String accessToken, String timeRange) {
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("time_range", timeRange);
-        Map<String, Object> response = client.get().uri("me/top/artists")
+        Map<String, Object> response = client.get()
+                .uri(builder -> builder.path("me/top/artists").queryParam("time_range", timeRange).build())
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve().bodyToMono(Map.class).block();
+        return response;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getTopTracks(String accessToken, String timeRange) {
+        Map<String, Object> response = client.get()
+                .uri(builder -> builder.path("me/top/tracks").queryParam("time_range", timeRange)
+                        .queryParam("limit", 50).build())
                 .header("Authorization", "Bearer " + accessToken)
                 .retrieve().bodyToMono(Map.class).block();
         return response;
