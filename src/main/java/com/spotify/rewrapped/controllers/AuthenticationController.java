@@ -26,17 +26,16 @@ public class AuthenticationController {
     private UserService userService;
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody Map<String, Object> data) throws ApiException {
+    public ResponseEntity<?> login(@RequestBody Map<String, Object> data) throws ApiException {
         String email = (String) data.get("email");
         User user = userService.getUserByEmail(email);
         if (user == null) {
-            throw new ApiException("User not found", HttpStatus.NOT_FOUND.value());
+            return signup(data);
         }
         Map<String, Object> result = connector.getNewAccessToken(user.getRefreshToken());
-        return result;
+        return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping("/signup")
     public ResponseEntity<Map<String, Object>> signup(@RequestBody Map<String, Object> data) throws ApiException {
         String clientId = connector.getClientId();
         String scope = "user-read-private user-top-read user-read-email";
