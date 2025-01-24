@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.spotify</groupId>
-	<artifactId>rewrapped-api</artifactId>
+	<artifactId>rewrapped</artifactId>
 	<version>0.0.1</version>
 	<name>ReWrapped API</name>
 	<description>API for Spotify ReWrapped</description>
