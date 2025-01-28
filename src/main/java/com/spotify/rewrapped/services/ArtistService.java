@@ -58,7 +58,7 @@ public class ArtistService {
         Map<String, Object> result = new HashMap<>();
         result.putAll(info);
         result.put("albums", albums);
-        result.put("tracks", topTracks);
+        result.putAll(topTracks);
         return result;
     }
 }
