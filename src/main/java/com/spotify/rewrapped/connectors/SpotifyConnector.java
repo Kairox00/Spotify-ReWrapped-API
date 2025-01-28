@@ -13,12 +13,13 @@ import java.util.Map;
 import com.spotify.rewrapped.exceptions.ApiException;
 import com.spotify.rewrapped.utils.JsonParserUtil;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class SpotifyConnector {
-    private static SpotifyConnector instance;
     private String clientId;
     private String clientSecret;
     private String baseUrl;
@@ -108,16 +109,10 @@ public class SpotifyConnector {
         }
     }
 
-    public static SpotifyConnector getInstance() {
-        if (instance == null) {
-            instance = new SpotifyConnector();
-        }
-        return instance;
-    }
-
+    @PostConstruct
     public void initializeConnection() {
         String accessToken = getApplicationToken();
-        client = client.mutate().defaultHeader("Authorization", "Bearer " + accessToken).build();
+        this.client = client.mutate().defaultHeader("Authorization", "Bearer " + accessToken).build();
         System.out.println("Connected to Spotify");
     }
 
