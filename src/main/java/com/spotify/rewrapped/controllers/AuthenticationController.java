@@ -32,6 +32,9 @@ public class AuthenticationController {
         if (user == null) {
             return signup(data);
         }
+        if (user.getRefreshToken() == null) {
+            throw new ApiException("User does not have refresh token", HttpStatus.BAD_REQUEST.value());
+        }
         Map<String, Object> result = connector.getNewAccessToken(user.getRefreshToken());
         return ResponseEntity.ok().body(result);
     }
