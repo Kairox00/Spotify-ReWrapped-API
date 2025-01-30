@@ -23,7 +23,7 @@ public class TrackService {
         .build();
   }
 
-  public Map<String, Object> getInfo(String id) throws ApiException {
+  private Map<String, Object> getInfo(String id) throws ApiException {
     try {
       Map<String, Object> response = spotifyClient.get().uri("tracks/" + id).retrieve().bodyToMono(Map.class).block();
       return response;
@@ -32,7 +32,7 @@ public class TrackService {
     }
   }
 
-  public Map<String, Object> getAudioFeatures(String id) throws ApiException {
+  private Map<String, Object> getAudioFeatures(String id) throws ApiException {
     try {
       Map<String, Object> response = statsFMClient.get().uri("audio-features/" + id).retrieve().bodyToMono(Map.class)
           .block();
