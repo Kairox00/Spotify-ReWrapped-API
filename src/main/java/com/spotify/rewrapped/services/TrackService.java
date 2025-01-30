@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.spotify.rewrapped.connectors.SpotifyConnector;
+import com.spotify.rewrapped.exceptions.ApiException;
 
 @Service
 public class TrackService {
@@ -22,28 +23,26 @@ public class TrackService {
         .build();
   }
 
-  public Map<String, Object> getInfo(String id) {
+  public Map<String, Object> getInfo(String id) throws ApiException {
     try {
       Map<String, Object> response = spotifyClient.get().uri("tracks/" + id).retrieve().bodyToMono(Map.class).block();
       return response;
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return null;
+      throw new ApiException(e.getMessage(), 500);
     }
   }
 
-  public Map<String, Object> getAudioFeatures(String id) {
+  public Map<String, Object> getAudioFeatures(String id) throws ApiException {
     try {
       Map<String, Object> response = statsFMClient.get().uri("audio-features/" + id).retrieve().bodyToMono(Map.class)
           .block();
       return response;
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return null;
+      throw new ApiException(e.getMessage(), 500);
     }
   }
 
-  public Map<String, Object> getTrackData(String id) {
+  public Map<String, Object> getTrackData(String id) throws ApiException {
     Map<String, Object> info = getInfo(id);
     Map<String, Object> audioFeatures = getAudioFeatures(id);
     Map<String, Object> result = new HashMap<>();
