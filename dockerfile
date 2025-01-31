@@ -1,9 +1,9 @@
-FROM maven:3.8.5-openjdk-17 AS build
+FROM openjdk:21-jdk-slim AS build
+RUN apt-get update && apt-get install -y maven
 COPY . .
 RUN mvn clean package -DskipTests
 
 FROM openjdk:21-jdk-slim
-WORKDIR /app
 COPY --from=build /target/*.jar app.jar
 EXPOSE 3000
 CMD ["java", "-jar", "app.jar"]
