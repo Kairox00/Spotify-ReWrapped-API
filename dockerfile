@@ -1,5 +1,5 @@
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 WORKDIR /app
-COPY target/rewrapped-api-0.0.0.jar app.jar
+COPY target/rewrapped-0.0.1.jar app.jar
 EXPOSE 3000
 CMD ["java", "-jar", "app.jar"]
