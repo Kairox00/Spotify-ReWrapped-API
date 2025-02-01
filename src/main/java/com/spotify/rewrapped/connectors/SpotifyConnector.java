@@ -15,7 +15,9 @@ import com.spotify.rewrapped.utils.JsonParserUtil;
 
 import jakarta.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -30,14 +32,15 @@ public class SpotifyConnector {
     @Value("${ui.url}")
     private String UI_URL;
 
-    private SpotifyConnector() {
+    @Autowired
+    private SpotifyConnector(Environment env) {
         clientId = "6a6355fbeb044695930d74e002d91214";
         baseUrl = "https://api.spotify.com/v1/";
         clientSecret = "2722c709f97248889ba35a4f33069ced";
         client = WebClient.builder()
                 .baseUrl(baseUrl)
                 .build();
-        redirectUri = UI_URL + "/callback";
+        redirectUri = env.getProperty("ui.url") + "/callback";
     }
 
     private String getApplicationToken() {
