@@ -29,9 +29,6 @@ public class SpotifyConnector {
     private WebClient client;
     private String redirectUri;
 
-    @Value("${ui.url}")
-    private String UI_URL;
-
     @Autowired
     private SpotifyConnector(Environment env) {
         clientId = "6a6355fbeb044695930d74e002d91214";

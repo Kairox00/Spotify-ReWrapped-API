@@ -29,7 +29,7 @@ public class AuthenticationController {
     public ResponseEntity<?> login(@RequestBody Map<String, Object> data) throws ApiException {
         String email = (String) data.get("email");
         User user = userService.getUserByEmail(email);
-        if (user == null) {
+        if (user == null || user.getRefreshToken() == null) {
             return signup(data);
         }
         if (user.getRefreshToken() == null) {
@@ -43,12 +43,12 @@ public class AuthenticationController {
         String clientId = connector.getClientId();
         String scope = "user-read-private user-top-read user-read-email";
         String email = (String) data.get("email");
-        Boolean hasUser = userService.getUserByEmail(email) != null;
-        if (hasUser) {
-            throw new ApiException("Invalid input", HttpStatus.BAD_REQUEST.value());
+
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            user = userService.createUser(email);
         }
-        User newUser = userService.createUser(email);
-        String state = newUser.getHashCode();
+        String state = user.getHashCode();
         String redirectUri = connector.getRedirectURI();
         String oAuthUrl = String.format(
                 "https://accounts.spotify.com/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s&state=%s",
