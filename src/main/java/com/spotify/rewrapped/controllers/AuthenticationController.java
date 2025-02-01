@@ -26,7 +26,7 @@ public class AuthenticationController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, Object> data) throws ApiException {
+    public ResponseEntity<Map<String, Object>> login() throws ApiException {
         String clientId = connector.getClientId();
         String scope = "user-read-private user-top-read user-read-email";
         String state = "myState";
