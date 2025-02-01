@@ -25,12 +25,11 @@ public class User {
   @Column(unique = true, nullable = false)
   private String email;
 
+  @Column(nullable = false)
   private String name;
 
-  private String refreshToken;
-
   @Column(nullable = false)
-  private String hashCode;
+  private String refreshToken;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private Set<UserTopArtist> topArtists = new HashSet<>();

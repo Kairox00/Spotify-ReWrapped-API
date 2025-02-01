@@ -27,28 +27,9 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, Object> data) throws ApiException {
-        String email = (String) data.get("email");
-        User user = userService.getUserByEmail(email);
-        if (user == null || user.getRefreshToken() == null) {
-            return signup(data);
-        }
-        if (user.getRefreshToken() == null) {
-            throw new ApiException("User does not have refresh token", HttpStatus.BAD_REQUEST.value());
-        }
-        Map<String, Object> result = connector.getNewAccessToken(user.getRefreshToken());
-        return ResponseEntity.ok().body(result);
-    }
-
-    public ResponseEntity<Map<String, Object>> signup(@RequestBody Map<String, Object> data) throws ApiException {
         String clientId = connector.getClientId();
         String scope = "user-read-private user-top-read user-read-email";
-        String email = (String) data.get("email");
-
-        User user = userService.getUserByEmail(email);
-        if (user == null) {
-            user = userService.createUser(email);
-        }
-        String state = user.getHashCode();
+        String state = "myState";
         String redirectUri = connector.getRedirectURI();
         String oAuthUrl = String.format(
                 "https://accounts.spotify.com/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s&state=%s",
@@ -61,13 +42,21 @@ public class AuthenticationController {
     @GetMapping("/callback")
     public ResponseEntity<?> callback(@RequestParam String code,
             @RequestParam String state) throws ApiException {
-        User user = userService.getUserByHashCode(state);
-        if (user == null || !user.getHashCode().equals(state)) {
-            throw new IllegalArgumentException("Invalid state parameter");
+        if (!state.equals("myState")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         Map<String, Object> result = connector.getUserRefreshToken(code, state);
-        user.setRefreshToken((String) result.get("refresh_token"));
-        userService.updateUser(user);
+        Map<String, Object> userInfo = userService.getUserInfo((String) result.get("access_token"));
+        String userSpotifyEmail = (String) userInfo.get("email");
+        if (userService.getUserByEmail(userSpotifyEmail) == null) {
+            User user = new User();
+            user.setRefreshToken((String) result.get("refresh_token"));
+            user.setName((String) userInfo.get("display_name"));
+            user.setEmail(userSpotifyEmail);
+            userService.createUser(user);
+        }
+        result.put("email", userSpotifyEmail);
         if (result.containsKey("error")) {
             return ResponseEntity.badRequest().build();
         }

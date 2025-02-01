@@ -1,6 +1,5 @@
 package com.spotify.rewrapped.services;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.spotify.rewrapped.connectors.SpotifyConnector;
 import com.spotify.rewrapped.models.User;
 import com.spotify.rewrapped.repositories.UserRepository;
-import com.spotify.rewrapped.utils.HashGenerator;
 
 @Service
 public class UserService {
@@ -31,20 +29,21 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User getUserByHashCode(String hashCode) {
-        return userRepository.findByHashCode(hashCode);
-    }
-
-    public User createUser(String email) {
-        User user = new User();
-        user.setEmail(email);
-        user.setHashCode(HashGenerator.generateHash(email));
+    public User createUser(User user) {
         userRepository.save(user);
         return user;
     }
 
     public User updateUser(User user) {
         return userRepository.save(user);
+    }
+
+    public Map<String, Object> getUserInfo(String accessToken) {
+        Map<String, Object> response = client.get()
+                .uri(builder -> builder.path("me").build())
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve().bodyToMono(Map.class).block();
+        return response;
     }
 
     @SuppressWarnings("unchecked")
