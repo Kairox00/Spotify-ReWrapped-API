@@ -9,18 +9,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spotify.rewrapped.services.UserService;
+import com.spotify.rewrapped.services.SpotifyUserService;
 
 @RestController
 @RequestMapping("/me")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private SpotifyUserService userService;
 
     @GetMapping("/top-artists")
     public Map<String, Object> getTopArtists(
             @RequestParam String time_range,
             @RequestHeader(name = "Authorization", required = true) String access_token) {
+        access_token = access_token.split(" ")[1];
         Map<String, Object> result = userService.getTopArtists(access_token, time_range);
         return result;
     }
@@ -29,6 +30,7 @@ public class UserController {
     public Map<String, Object> getTopTracks(
             @RequestParam String time_range,
             @RequestHeader(name = "Authorization", required = true) String access_token) {
+        access_token = access_token.split(" ")[1];
         Map<String, Object> result = userService.getTopTracks(access_token, time_range);
         return result;
     }

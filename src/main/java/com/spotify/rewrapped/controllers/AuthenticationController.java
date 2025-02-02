@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spotify.rewrapped.connectors.SpotifyConnector;
 import com.spotify.rewrapped.exceptions.ApiException;
 import com.spotify.rewrapped.models.User;
+import com.spotify.rewrapped.services.SpotifyUserService;
 import com.spotify.rewrapped.services.UserService;
 
 @RestController
@@ -24,6 +25,9 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SpotifyUserService spotifyUserService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login() throws ApiException {
@@ -47,7 +51,7 @@ public class AuthenticationController {
         }
 
         Map<String, Object> result = connector.getUserRefreshToken(code, state);
-        Map<String, Object> userInfo = userService.getUserInfo((String) result.get("access_token"));
+        Map<String, Object> userInfo = spotifyUserService.getUserInfo((String) result.get("access_token"));
         String userSpotifyEmail = (String) userInfo.get("email");
         if (userService.getUserByEmail(userSpotifyEmail) == null) {
             User user = new User();
