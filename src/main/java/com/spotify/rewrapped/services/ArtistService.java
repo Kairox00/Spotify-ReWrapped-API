@@ -3,24 +3,22 @@ package com.spotify.rewrapped.services;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import com.spotify.rewrapped.connectors.SpotifyConnector;
+import com.spotify.rewrapped.connections.SpotifyConnection;
 
 @Service
 public class ArtistService {
-    private WebClient client;
+    private final SpotifyConnection connection;
 
-    @Autowired
-    public ArtistService(SpotifyConnector connector) {
-        this.client = connector.getClient();
+    public ArtistService(SpotifyConnection connection) {
+        this.connection = connection;
     }
 
     public Map<String, Object> getInfo(String id) {
         try {
-            Map<String, Object> response = client.get().uri("artists/" + id).retrieve().bodyToMono(Map.class).block();
+            Map<String, Object> response = connection.getClient().get().uri("artists/" + id).retrieve()
+                    .bodyToMono(Map.class).block();
             return response;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -31,7 +29,7 @@ public class ArtistService {
 
     public Map<String, Object> getTopTracks(String id) {
         try {
-            Map<String, Object> response = client.get().uri("artists/" + id + "/top-tracks").retrieve()
+            Map<String, Object> response = connection.getClient().get().uri("artists/" + id + "/top-tracks").retrieve()
                     .bodyToMono(Map.class).block();
             return response;
         } catch (Exception e) {
@@ -42,7 +40,7 @@ public class ArtistService {
 
     public Map<String, Object> getAlbums(String id) {
         try {
-            Map<String, Object> response = client.get().uri("artists/" + id + "/albums").retrieve()
+            Map<String, Object> response = connection.getClient().get().uri("artists/" + id + "/albums").retrieve()
                     .bodyToMono(Map.class).block();
             return response;
         } catch (Exception e) {

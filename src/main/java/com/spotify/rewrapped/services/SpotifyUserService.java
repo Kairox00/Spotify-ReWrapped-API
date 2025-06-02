@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.spotify.rewrapped.connectors.SpotifyConnector;
+import com.spotify.rewrapped.connections.SpotifyConnection;
 
 @Service
 public class SpotifyUserService {
   @Autowired
-  private SpotifyConnector connector;
+  private SpotifyConnection connector;
 
   @SuppressWarnings("unchecked")
   public Map<String, Object> getUserInfo(String accessToken) {

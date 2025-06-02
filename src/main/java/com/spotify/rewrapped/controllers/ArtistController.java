@@ -2,7 +2,6 @@ package com.spotify.rewrapped.controllers;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +13,12 @@ import com.spotify.rewrapped.services.ArtistService;
 @RestController
 @RequestMapping("/artists")
 public class ArtistController {
-  @Autowired
-  private ArtistService artistService;
+
+  private final ArtistService artistService;
+
+  public ArtistController(ArtistService artistService) {
+    this.artistService = artistService;
+  }
 
   @GetMapping("/{id}")
   public ResponseEntity<Map<String, Object>> getData(@PathVariable("id") String id) {

@@ -1,4 +1,4 @@
-package com.spotify.rewrapped.connectors;
+package com.spotify.rewrapped.connections;
 
 import java.io.IOException;
 import java.net.URI;
@@ -10,27 +10,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import com.spotify.rewrapped.exceptions.ApiException;
 import com.spotify.rewrapped.utils.JsonParserUtil;
 
 import jakarta.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
 @Component
-public class SpotifyConnector {
+public class SpotifyConnection {
     private String clientId;
     private String clientSecret;
     private String baseUrl;
     private WebClient client;
     private String redirectUri;
 
-    @Autowired
-    private SpotifyConnector(Environment env) {
+    private SpotifyConnection(Environment env) {
         clientId = "6a6355fbeb044695930d74e002d91214";
         baseUrl = "https://api.spotify.com/v1/";
         clientSecret = "2722c709f97248889ba35a4f33069ced";
