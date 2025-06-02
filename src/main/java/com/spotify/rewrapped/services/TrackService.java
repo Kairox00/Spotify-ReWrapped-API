@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.spotify.rewrapped.connections.SpotifyConnection;
 import com.spotify.rewrapped.connections.StatsFMConnection;
-import com.spotify.rewrapped.dtos.AudioFeaturesDTO;
 import com.spotify.rewrapped.dtos.TrackDTO;
+import com.spotify.rewrapped.dtos.attributes.AudioFeaturesDTO;
 import com.spotify.rewrapped.exceptions.ApiException;
 
 @Service

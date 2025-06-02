@@ -1,4 +1,4 @@
-package com.spotify.rewrapped.dtos.common;
+package com.spotify.rewrapped.dtos.attributes;
 
 import java.util.List;
 

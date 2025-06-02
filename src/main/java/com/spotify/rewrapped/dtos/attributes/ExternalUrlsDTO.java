@@ -1,4 +1,4 @@
-package com.spotify.rewrapped.dtos.common;
+package com.spotify.rewrapped.dtos.attributes;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CopyrightDTO {
-  private String text;
-  private String type;
+public class ExternalUrlsDTO {
+  private String spotify;
 }

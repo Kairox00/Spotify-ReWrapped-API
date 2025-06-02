@@ -1,6 +1,4 @@
-package com.spotify.rewrapped.dtos.common;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.spotify.rewrapped.dtos.attributes;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ArtistRefDTO {
-  @JsonProperty("external_urls")
-  private ExternalUrlsDTO externalUrls;
+public class LinkedFromDTO {
+  private ExternalUrlsDTO external_urls;
   private String href;
   private String id;
-  private String name;
   private String type;
   private String uri;
 }

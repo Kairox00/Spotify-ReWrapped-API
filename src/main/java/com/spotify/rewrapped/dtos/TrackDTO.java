@@ -3,12 +3,13 @@ package com.spotify.rewrapped.dtos;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.spotify.rewrapped.dtos.common.ArtistRefDTO;
-import com.spotify.rewrapped.dtos.common.ExternalIdsDTO;
-import com.spotify.rewrapped.dtos.common.ExternalUrlsDTO;
-import com.spotify.rewrapped.dtos.common.ImageDTO;
-import com.spotify.rewrapped.dtos.common.LinkedFromDTO;
-import com.spotify.rewrapped.dtos.common.RestrictionsDTO;
+import com.spotify.rewrapped.dtos.attributes.ArtistRefDTO;
+import com.spotify.rewrapped.dtos.attributes.AudioFeaturesDTO;
+import com.spotify.rewrapped.dtos.attributes.ExternalIdsDTO;
+import com.spotify.rewrapped.dtos.attributes.ExternalUrlsDTO;
+import com.spotify.rewrapped.dtos.attributes.ImageDTO;
+import com.spotify.rewrapped.dtos.attributes.LinkedFromDTO;
+import com.spotify.rewrapped.dtos.attributes.RestrictionsDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
