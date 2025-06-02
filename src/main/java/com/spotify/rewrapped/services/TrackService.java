@@ -6,7 +6,6 @@ import com.spotify.rewrapped.connections.SpotifyConnection;
 import com.spotify.rewrapped.connections.StatsFMConnection;
 import com.spotify.rewrapped.dtos.AudioFeaturesDTO;
 import com.spotify.rewrapped.dtos.TrackDTO;
-import com.spotify.rewrapped.dtos.TrackInfoDTO;
 import com.spotify.rewrapped.exceptions.ApiException;
 
 @Service
@@ -19,10 +18,10 @@ public class TrackService {
     this.statsFMConnection = statsFMConnection;
   }
 
-  private TrackInfoDTO getInfo(String id) throws ApiException {
+  private TrackDTO getInfo(String id) throws ApiException {
     try {
-      TrackInfoDTO response = spotifyConnection.getClient().get().uri("tracks/" + id).retrieve()
-          .bodyToMono(TrackInfoDTO.class).block();
+      TrackDTO response = spotifyConnection.getClient().get().uri("tracks/" + id).retrieve()
+          .bodyToMono(TrackDTO.class).block();
       return response;
     } catch (Exception e) {
       throw new ApiException(e.getMessage(), 500);
@@ -41,9 +40,9 @@ public class TrackService {
   }
 
   public TrackDTO getTrackData(String id) throws ApiException {
-    TrackInfoDTO info = getInfo(id);
+    TrackDTO track = getInfo(id);
     AudioFeaturesDTO audioFeatures = getAudioFeatures(id);
-    TrackDTO track = new TrackDTO(info, audioFeatures);
+    track.setAudioFeatures(audioFeatures);
     return track;
   }
 

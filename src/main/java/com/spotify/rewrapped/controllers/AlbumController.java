@@ -1,13 +1,12 @@
 package com.spotify.rewrapped.controllers;
 
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.spotify.rewrapped.dtos.AlbumDTO;
 import com.spotify.rewrapped.exceptions.ApiException;
 import com.spotify.rewrapped.services.AlbumService;
 
@@ -21,8 +20,8 @@ public class AlbumController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Map<String, Object>> getAlbumData(@PathVariable("id") String id) throws ApiException {
-    Map<String, Object> data = albumService.getAlbumData(id);
+  public ResponseEntity<AlbumDTO> getAlbumData(@PathVariable String id) throws ApiException {
+    AlbumDTO data = albumService.getAlbum(id);
     return ResponseEntity.ok().body(data);
   }
 }
