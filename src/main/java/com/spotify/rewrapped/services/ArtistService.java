@@ -1,11 +1,11 @@
 package com.spotify.rewrapped.services;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 
 import com.spotify.rewrapped.connections.SpotifyConnection;
+import com.spotify.rewrapped.dtos.ArtistDTO;
+import com.spotify.rewrapped.dtos.attributes.AlbumsDTO;
+import com.spotify.rewrapped.dtos.attributes.TopTracksDTO;
 
 @Service
 public class ArtistService {
@@ -15,48 +15,46 @@ public class ArtistService {
         this.connection = connection;
     }
 
-    public Map<String, Object> getInfo(String id) {
+    public ArtistDTO getInfo(String id) {
         try {
-            Map<String, Object> response = connection.getClient().get().uri("artists/" + id).retrieve()
-                    .bodyToMono(Map.class).block();
+            ArtistDTO response = connection.getClient().get().uri("artists/" + id).retrieve()
+                    .bodyToMono(ArtistDTO.class).block();
             return response;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
 
     }
 
-    public Map<String, Object> getTopTracks(String id) {
+    public TopTracksDTO getTopTracks(String id) {
         try {
-            Map<String, Object> response = connection.getClient().get().uri("artists/" + id + "/top-tracks").retrieve()
-                    .bodyToMono(Map.class).block();
+            TopTracksDTO response = connection.getClient().get().uri("artists/" + id + "/top-tracks").retrieve()
+                    .bodyToMono(TopTracksDTO.class).block();
             return response;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
     }
 
-    public Map<String, Object> getAlbums(String id) {
+    public AlbumsDTO getAlbums(String id) {
         try {
-            Map<String, Object> response = connection.getClient().get().uri("artists/" + id + "/albums").retrieve()
-                    .bodyToMono(Map.class).block();
+            AlbumsDTO response = connection.getClient().get().uri("artists/" + id + "/albums").retrieve()
+                    .bodyToMono(AlbumsDTO.class).block();
             return response;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
     }
 
-    public Map<String, Object> getArtistData(String id) {
-        Map<String, Object> info = getInfo(id);
-        Map<String, Object> topTracks = getTopTracks(id);
-        Map<String, Object> albums = getAlbums(id);
-        Map<String, Object> result = new HashMap<>();
-        result.putAll(info);
-        result.put("albums", albums);
-        result.putAll(topTracks);
-        return result;
+    public ArtistDTO getArtistData(String id) {
+        ArtistDTO artist = getInfo(id);
+        TopTracksDTO topTracks = getTopTracks(id);
+        AlbumsDTO albums = getAlbums(id);
+        artist.setAlbums(albums);
+        artist.setTracks(topTracks.getTracks());
+        return artist;
     }
 }

@@ -2,7 +2,6 @@ package com.spotify.rewrapped.dtos;
 
 import java.util.List;
 
-import com.spotify.rewrapped.dtos.attributes.ArtistRefDTO;
 import com.spotify.rewrapped.dtos.attributes.CopyrightDTO;
 import com.spotify.rewrapped.dtos.attributes.ExternalIdsDTO;
 import com.spotify.rewrapped.dtos.attributes.ExternalUrlsDTO;
@@ -31,7 +30,7 @@ public class AlbumDTO {
   private RestrictionsDTO restrictions;
   private String type;
   private String uri;
-  private List<ArtistRefDTO> artists;
+  private List<ArtistDTO> artists;
   private TracksDTO tracks;
   private List<CopyrightDTO> copyrights;
   private ExternalIdsDTO external_ids;

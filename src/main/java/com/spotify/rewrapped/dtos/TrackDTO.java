@@ -3,7 +3,6 @@ package com.spotify.rewrapped.dtos;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.spotify.rewrapped.dtos.attributes.ArtistRefDTO;
 import com.spotify.rewrapped.dtos.attributes.AudioFeaturesDTO;
 import com.spotify.rewrapped.dtos.attributes.ExternalIdsDTO;
 import com.spotify.rewrapped.dtos.attributes.ExternalUrlsDTO;
@@ -22,7 +21,7 @@ public class TrackDTO {
 
   private AlbumDTO album;
 
-  private List<ArtistRefDTO> artists;
+  private List<ArtistDTO> artists;
 
   @JsonProperty("available_markets")
   private List<String> availableMarkets;
