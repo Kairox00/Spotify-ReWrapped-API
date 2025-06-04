@@ -21,9 +21,8 @@ functions:
   handler:
     memorySize: 1024
     timeout: 30
-    runtime: java21
-    snapStart:
-      applyOn: PublishedVersions
+    runtime: java17
+    snapStart: true
     handler: com.spotify.rewrapped.StreamLambdaHandler::handleRequest
     events:
       - http:
@@ -32,19 +31,3 @@ functions:
       - http:
           path: /{proxy+}
           method: any
-
-iam:
-  role:
-    statements:
-      - Effect: "Allow"
-        Action:
-          - "ssm:GetParameter"
-          - "ssm:GetParameters"
-          - "ssm:GetParametersByPath"
-        Resource:
-          - "arn:aws:ssm:${self:provider.region}:${aws:accountId}:parameter/rewrapped/*"
-      - Effect: "Allow"
-        Action:
-          - "kms:Decrypt"
-        Resource:
-          - "arn:aws:kms:${self:provider.region}:${aws:accountId}:key/*"
