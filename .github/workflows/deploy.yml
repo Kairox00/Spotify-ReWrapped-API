@@ -19,6 +19,14 @@ jobs:
           java-version: "21"
           distribution: "temurin"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Serverless Framework v3.38.0
+        run: npm install -g serverless@3.38.0
+
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
@@ -30,4 +38,4 @@ jobs:
           aws-region: eu-central-1
 
       - name: Deploy with Serverless
-        run: npx serverless deploy --stage prod
+        run: serverless deploy --stage prod
