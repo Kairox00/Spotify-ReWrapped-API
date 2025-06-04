@@ -1,0 +1,50 @@
+service: rewrapped-api
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  region: eu-central-1
+  stage: ${opt:stage, 'prod'}
+  environment:
+    MAIN_CLASS: com.spotify.rewrapped.YourSpringBootApplication
+    PORT: 3000
+    DATASOURCE_URL: ${ssm:/rewrapped/prod/db-url}
+    DATASOURCE_USERNAME: ${ssm:/rewrapped/prod/db-username}
+    DATASOURCE_PASSWORD: ${ssm:/rewrapped/prod/db-password,true}
+    UI_URL: https://spotify-rewrapped-ui.onrender.com
+
+package:
+  artifact: target/rewrapped-0.0.1.jar
+
+functions:
+  handler:
+    memorySize: 1024
+    timeout: 30
+    runtime: java17
+    snapStart:
+      applyOn: PublishedVersions
+    handler: com.spotify.rewrapped.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: /
+          method: any
+      - http:
+          path: /{proxy+}
+          method: any
+
+iam:
+  role:
+    statements:
+      - Effect: "Allow"
+        Action:
+          - "ssm:GetParameter"
+          - "ssm:GetParameters"
+          - "ssm:GetParametersByPath"
+        Resource:
+          - "arn:aws:ssm:${self:provider.region}:${aws:accountId}:parameter/rewrapped/*"
+      - Effect: "Allow"
+        Action:
+          - "kms:Decrypt"
+        Resource:
+          - "arn:aws:kms:${self:provider.region}:${aws:accountId}:key/*"
