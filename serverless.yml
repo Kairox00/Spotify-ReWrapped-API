@@ -7,7 +7,7 @@ provider:
   region: eu-central-1
   stage: ${opt:stage, 'prod'}
   environment:
-    MAIN_CLASS: com.spotify.rewrapped.YourSpringBootApplication
+    MAIN_CLASS: com.spotify.rewrapped.RewrappedApplication
     PORT: 3000
     DATASOURCE_URL: ${ssm:/rewrapped/prod/db-url}
     DATASOURCE_USERNAME: ${ssm:/rewrapped/prod/db-username}
