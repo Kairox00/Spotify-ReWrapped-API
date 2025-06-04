@@ -21,7 +21,7 @@ functions:
   handler:
     memorySize: 1024
     timeout: 30
-    runtime: java17
+    runtime: java21
     snapStart:
       applyOn: PublishedVersions
     handler: com.spotify.rewrapped.StreamLambdaHandler::handleRequest
