@@ -26,8 +26,52 @@ functions:
     handler: com.spotify.rewrapped.StreamLambdaHandler::handleRequest
     events:
       - http:
-          path: /
-          method: any
-      - http:
           path: /{proxy+}
           method: any
+          cors: true
+          private: true
+
+apiGateway:
+  apiKeys:
+    - name: rewrapped-api-key
+  usagePlan:
+    quota:
+      limit: 1000
+      period: MONTH
+    throttle:
+      rateLimit: 100
+      burstLimit: 10
+
+resources:
+  Resources:
+    lambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: rewrapped-api-lambda-execution-role-${sls:stage}
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: rewrapped-api-lambda-execution-policy-${sls:stage}
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "logs:CreateLogStream"
+                    - "logs:TagResource"
+                    - "logs:CreateLogGroup"
+                    - "logs:PutLogEvents"
+                  Resource:
+                    - "arn:aws:logs:*:*:log-group:/aws/lambda/*"
+                - Effect: Allow
+                  Action:
+                    - "ssm:GetParameter"
+                    - "ssm:GetParameters"
+                    - "ssm:GetParametersByPath"
+                  Resource:
+                    - "arn:aws:ssm:*"
