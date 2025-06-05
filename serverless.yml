@@ -29,8 +29,8 @@ package:
 
 functions:
   handler:
-    memorySize: 2024
-    timeout: 300
+    memorySize: 512
+    timeout: 60
     role:
       Fn::GetAtt:
         - lambdaExecutionRole
