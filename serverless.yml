@@ -36,7 +36,6 @@ functions:
         - lambdaExecutionRole
         - Arn
     runtime: java17
-    snapStart: true
     handler: com.spotify.rewrapped.StreamLambdaHandler::handleRequest
     events:
       - http:
