@@ -24,6 +24,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login() throws ApiException {
+        System.out.println("Attempting to login to Spotify");
         Map<String, Object> result = authenticationService.login();
         return ResponseEntity.ok().body(result);
     }
@@ -31,6 +32,7 @@ public class AuthenticationController {
     @GetMapping("/callback")
     public ResponseEntity<?> callback(@RequestParam String code,
             @RequestParam String state) throws ApiException {
+        System.out.println("Received callback");
         if (!state.equals("myState")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -38,6 +40,7 @@ public class AuthenticationController {
         if (result.containsKey("error")) {
             return ResponseEntity.badRequest().build();
         }
+        System.out.println("User will be redirected to the home page");
         return ResponseEntity.ok(result);
     }
 }

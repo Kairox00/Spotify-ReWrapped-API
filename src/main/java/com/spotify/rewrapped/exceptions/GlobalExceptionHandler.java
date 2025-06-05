@@ -23,6 +23,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ErrorResponseDTO handleException(Exception ex) {
         ex.printStackTrace();
+        System.err.println("[ERROR]: " + ex.getMessage());
         return new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
     }
 }
