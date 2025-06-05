@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import com.spotify.rewrapped.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
