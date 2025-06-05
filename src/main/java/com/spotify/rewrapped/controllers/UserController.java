@@ -2,6 +2,7 @@ package com.spotify.rewrapped.controllers;
 
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.spotify.rewrapped.services.SpotifyUserService;
 
 @RestController
 @RequestMapping("/me")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     private final SpotifyUserService userService;
 

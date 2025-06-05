@@ -1,6 +1,7 @@
 package com.spotify.rewrapped.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import com.spotify.rewrapped.services.ArtistService;
 
 @RestController
 @RequestMapping("/artists")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ArtistController {
 
   private final ArtistService artistService;
