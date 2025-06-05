@@ -13,6 +13,16 @@ provider:
     DATASOURCE_USERNAME: ${ssm:/rewrapped/prod/db-username}
     DATASOURCE_PASSWORD: ${ssm:/rewrapped/prod/db-password,true}
     UI_URL: https://spotify-rewrapped-ui.onrender.com
+  apiGateway:
+    apiKeys:
+      - name: rewrapped-api-key
+    usagePlan:
+      quota:
+        limit: 1000
+        period: MONTH
+      throttle:
+        rateLimit: 100
+        burstLimit: 10
 
 package:
   artifact: target/rewrapped-0.0.1.jar
@@ -30,17 +40,6 @@ functions:
           method: any
           cors: true
           private: true
-
-apiGateway:
-  apiKeys:
-    - name: rewrapped-api-key
-  usagePlan:
-    quota:
-      limit: 1000
-      period: MONTH
-    throttle:
-      rateLimit: 100
-      burstLimit: 10
 
 resources:
   Resources:
