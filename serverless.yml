@@ -31,6 +31,10 @@ functions:
   handler:
     memorySize: 1024
     timeout: 30
+    role:
+      Fn::GetAtt:
+        - lambdaExecutionRole
+        - Arn
     runtime: java17
     snapStart: true
     handler: com.spotify.rewrapped.StreamLambdaHandler::handleRequest
