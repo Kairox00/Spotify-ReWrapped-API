@@ -20,10 +20,12 @@ public class TrackService {
 
   private TrackDTO getInfo(String id) throws ApiException {
     try {
+      System.out.println("Getting track info");
       TrackDTO response = spotifyConnection.getClient().get().uri("tracks/" + id).retrieve()
           .bodyToMono(TrackDTO.class).block();
       return response;
     } catch (Exception e) {
+      System.err.println(e.getMessage());
       throw new ApiException(e.getMessage(), 500);
     }
   }

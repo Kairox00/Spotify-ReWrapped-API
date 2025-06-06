@@ -1,17 +1,17 @@
 package com.spotify.rewrapped.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.spotify.rewrapped.dtos.TrackDTO;
 import com.spotify.rewrapped.exceptions.ApiException;
 import com.spotify.rewrapped.services.TrackService;
 
-@Controller
+@RestController
 @RequestMapping("/tracks")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class TrackController {
@@ -23,6 +23,7 @@ public class TrackController {
 
   @GetMapping("/{id}")
   public ResponseEntity<TrackDTO> getData(@PathVariable String id) throws ApiException {
+    System.out.println("Received track request");
     TrackDTO data = trackService.getTrackData(id);
     return ResponseEntity.ok().body(data);
   }
