@@ -22,7 +22,7 @@ public class UserTopArtist {
   private String artistId;
 
   @Id
-  private String month;
+  private int month;
 
   @Id
   private String year;
