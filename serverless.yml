@@ -31,6 +31,7 @@ functions:
   handler:
     memorySize: 512
     timeout: 60
+    snapStart: true
     role:
       Fn::GetAtt:
         - lambdaExecutionRole
