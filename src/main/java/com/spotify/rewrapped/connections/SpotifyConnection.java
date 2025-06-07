@@ -8,6 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.core.env.Environment;
@@ -17,8 +18,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.spotify.rewrapped.exceptions.ApiException;
 import com.spotify.rewrapped.utils.JsonParserUtil;
 
-import jakarta.annotation.PostConstruct;
-
 @Component
 public class SpotifyConnection {
     private String clientId;
@@ -26,6 +25,7 @@ public class SpotifyConnection {
     private String baseUrl;
     private WebClient client;
     private String redirectUri;
+    private SpotifyClientToken token;
 
     private SpotifyConnection(Environment env) {
         clientId = "6a6355fbeb044695930d74e002d91214";
@@ -38,6 +38,12 @@ public class SpotifyConnection {
     }
 
     private String getApplicationToken() {
+        Date now = new Date();
+        if (token != null && now.before(token.getExpiryDate())) {
+            System.out.println("Using cached client token");
+            return token.getValue();
+        }
+        System.out.println("Generating new client token");
         String url = "https://accounts.spotify.com/api/token";
         String formData = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s", clientId,
                 clientSecret);
@@ -50,7 +56,10 @@ public class SpotifyConnection {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             Map<String, Object> parsedResponse = JsonParserUtil.parseJSON(response.body());
-            return (String) parsedResponse.get("access_token");
+            String value = (String) parsedResponse.get("access_token");
+            Double expiresIn = (Double) parsedResponse.get("expires_in");
+            token = new SpotifyClientToken(value, new Date(now.getTime() + expiresIn.intValue() * 1000));
+            return value;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
@@ -82,7 +91,7 @@ public class SpotifyConnection {
         }
     }
 
-    public Map<String, Object> getNewAccessToken(String refreshToken) throws ApiException {
+    public Map<String, Object> getUserAccessToken(String refreshToken) throws ApiException {
         String url = "https://accounts.spotify.com/api/token";
         String formData = String.format("refresh_token=%s&client_id=%s&grant_type=refresh_token",
                 URLEncoder.encode(refreshToken, StandardCharsets.UTF_8),
@@ -110,10 +119,9 @@ public class SpotifyConnection {
         }
     }
 
-    @PostConstruct
     public void initializeConnection() {
-        String accessToken = getApplicationToken();
-        this.client = client.mutate().defaultHeader("Authorization", "Bearer " + accessToken).build();
+        String clientToken = getApplicationToken();
+        this.client = client.mutate().defaultHeader("Authorization", "Bearer " + clientToken).build();
         System.out.println("Connected to Spotify");
     }
 
@@ -122,6 +130,7 @@ public class SpotifyConnection {
     }
 
     public WebClient getClient() {
+        initializeConnection();
         return this.client;
     }
 

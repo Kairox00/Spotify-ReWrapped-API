@@ -19,11 +19,10 @@ public class TrackService {
     this.statsFMConnection = statsFMConnection;
   }
 
-  private TrackDTO getInfo(String id, String access_token) throws ApiException {
+  private TrackDTO getInfo(String id) throws ApiException {
     try {
       System.out.println("Getting track info");
       WebClient client = spotifyConnection.getClient();
-      client = client.mutate().defaultHeader("Authorization", "Bearer " + access_token).build();
       TrackDTO response = client.get().uri("tracks/" + id).retrieve()
           .bodyToMono(TrackDTO.class).block();
       return response;
@@ -44,8 +43,8 @@ public class TrackService {
     }
   }
 
-  public TrackDTO getTrackData(String id, String access_token) throws ApiException {
-    TrackDTO track = getInfo(id, access_token);
+  public TrackDTO getTrackData(String id) throws ApiException {
+    TrackDTO track = getInfo(id);
     AudioFeaturesDTO audioFeatures = getAudioFeatures(id);
     track.setAudioFeatures(audioFeatures);
     return track;
