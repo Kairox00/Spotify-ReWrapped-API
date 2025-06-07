@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,9 +23,10 @@ public class TrackController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<TrackDTO> getData(@PathVariable String id) throws ApiException {
+  public ResponseEntity<TrackDTO> getData(@PathVariable String id,
+      @RequestHeader(name = "Authorization", required = true) String access_token) throws ApiException {
     System.out.println("Received track request");
-    TrackDTO data = trackService.getTrackData(id);
+    TrackDTO data = trackService.getTrackData(id, access_token);
     return ResponseEntity.ok().body(data);
   }
 

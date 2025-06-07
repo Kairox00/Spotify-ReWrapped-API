@@ -1,6 +1,7 @@
 package com.spotify.rewrapped.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.spotify.rewrapped.connections.SpotifyConnection;
 import com.spotify.rewrapped.connections.StatsFMConnection;
@@ -18,9 +19,11 @@ public class TrackService {
     this.statsFMConnection = statsFMConnection;
   }
 
-  private TrackDTO getInfo(String id) throws ApiException {
+  private TrackDTO getInfo(String id, String access_token) throws ApiException {
     try {
       System.out.println("Getting track info");
+      WebClient client = spotifyConnection.getClient();
+      client = client.mutate().defaultHeader("Authorization", "Bearer " + access_token).build();
       TrackDTO response = spotifyConnection.getClient().get().uri("tracks/" + id).retrieve()
           .bodyToMono(TrackDTO.class).block();
       return response;
@@ -41,8 +44,8 @@ public class TrackService {
     }
   }
 
-  public TrackDTO getTrackData(String id) throws ApiException {
-    TrackDTO track = getInfo(id);
+  public TrackDTO getTrackData(String id, String access_token) throws ApiException {
+    TrackDTO track = getInfo(id, access_token);
     AudioFeaturesDTO audioFeatures = getAudioFeatures(id);
     track.setAudioFeatures(audioFeatures);
     return track;
