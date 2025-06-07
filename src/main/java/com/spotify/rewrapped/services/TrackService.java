@@ -24,7 +24,7 @@ public class TrackService {
       System.out.println("Getting track info");
       WebClient client = spotifyConnection.getClient();
       client = client.mutate().defaultHeader("Authorization", "Bearer " + access_token).build();
-      TrackDTO response = spotifyConnection.getClient().get().uri("tracks/" + id).retrieve()
+      TrackDTO response = client.get().uri("tracks/" + id).retrieve()
           .bodyToMono(TrackDTO.class).block();
       return response;
     } catch (Exception e) {
