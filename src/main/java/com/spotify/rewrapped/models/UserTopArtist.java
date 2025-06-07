@@ -25,7 +25,7 @@ public class UserTopArtist {
   private int month;
 
   @Id
-  private String year;
+  private int year;
 
   @Id
   private int rank;
